@@ -1,18 +1,34 @@
-import { ScrollArea } from '@radix-ui/react-scroll-area';
-import { Card } from '@/components/ui/card';
+"use client"
+
+// import React, { useRef, useState } from 'react';
+// Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/free-mode';
+import 'swiper/css/pagination';
+import '@/app/globals.css';
+
+// import required modules
+import { FreeMode } from 'swiper/modules';
+import AddTag from './AddTag';
 
 export default function Tags() {
 	return (
-		<ScrollArea className="h-32 w-full">
-			<div className="flex space-x-4 overflow-x-auto max-w-lg">
-				{Array.from({ length: 10 }).map((_, index) => (
-					<Card className="w-64" key={index}>
-						<div className="p-4">
-							<p>Card</p>
-						</div>
-					</Card>
-				))}
+		<div className="relative gap-4 border-border my-5 bg-slate-100 py-3 px-5 rounded-md w-[850px]">
+			<div className="overflow-x-auto w-[800px]">
+				<Swiper spaceBetween={10} freeMode={true} modules={[FreeMode]} className="mySwiper" grabCursor={true} slidesPerView="auto">
+					<SwiperSlide className="text-white bg-blue-500">All</SwiperSlide>
+					{Array.from({ length: 10 }).map((_, idx) => (
+						<SwiperSlide key={idx} className="text-black">
+							Tag {idx + 1}
+						</SwiperSlide>
+					))}
+				</Swiper>
 			</div>
-		</ScrollArea>
+
+			<AddTag />
+		</div>
 	);
 }

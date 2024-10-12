@@ -45,7 +45,7 @@ export const SidebarProvider = ({
 	const open = openProp !== undefined ? openProp : openState;
 	const setOpen = setOpenProp !== undefined ? setOpenProp : setOpenState;
 
-	return <SidebarContext.Provider value={{ open, setOpen, animate: animate }}>{children}</SidebarContext.Provider>;
+	return <SidebarContext.Provider value={{ open, setOpen, animate }}>{children}</SidebarContext.Provider>;
 };
 
 export const Sidebar = ({ children, open, setOpen, animate }: { children: React.ReactNode; open?: boolean; setOpen?: React.Dispatch<React.SetStateAction<boolean>>; animate?: boolean }) => {
@@ -68,51 +68,47 @@ export const SidebarBody = (props: React.ComponentProps<typeof motion.div>) => {
 export const DesktopSidebar = ({ className, children, ...props }: React.ComponentProps<typeof motion.div>) => {
 	const { open, setOpen, animate } = useSidebar();
 	return (
-		<>
-			<motion.div
-				className={cn('h-full px-4 py-4 hidden  md:flex md:flex-col bg-neutral-100 dark:bg-neutral-800 w-[240px] flex-shrink-0', className)}
-				animate={{
-					width: animate ? (open ? '240px' : '60px') : '240px',
-				}}
-				onMouseEnter={() => setOpen(true)}
-				onMouseLeave={() => setOpen(false)}
-				{...props}
-			>
-				{children}
-			</motion.div>
-		</>
+		<motion.div
+			className={cn('h-full px-4 py-4 hidden  md:flex md:flex-col bg-neutral-100 dark:bg-neutral-800 w-[240px] flex-shrink-0', className)}
+			animate={{
+				width: animate ? (open ? '240px' : '60px') : '240px',
+			}}
+			onMouseEnter={() => setOpen(true)}
+			onMouseLeave={() => setOpen(false)}
+			{...props}
+		>
+			{children}
+		</motion.div>
 	);
 };
 
 export const MobileSidebar = ({ className, children, ...props }: React.ComponentProps<'div'>) => {
 	const { open, setOpen } = useSidebar();
 	return (
-		<>
-			<div className={cn('h-10 px-4 py-4 flex flex-row md:hidden  items-center justify-between bg-neutral-100 dark:bg-neutral-800 w-full')} {...props}>
-				<div className="flex justify-end z-20 w-full">
-					<IconMenu2 className="text-neutral-800 dark:text-neutral-200" onClick={() => setOpen(!open)} />
-				</div>
-				<AnimatePresence>
-					{open && (
-						<motion.div
-							initial={{ x: '-100%', opacity: 0 }}
-							animate={{ x: 0, opacity: 1 }}
-							exit={{ x: '-100%', opacity: 0 }}
-							transition={{
-								duration: 0.3,
-								ease: 'easeInOut',
-							}}
-							className={cn('fixed h-full w-full inset-0 bg-white dark:bg-neutral-900 p-10 z-[100] flex flex-col justify-between', className)}
-						>
-							<div className="absolute right-10 top-10 z-50 text-neutral-800 dark:text-neutral-200" onClick={() => setOpen(!open)}>
-								<IconX />
-							</div>
-							{children}
-						</motion.div>
-					)}
-				</AnimatePresence>
+		<div className={cn('h-10 px-4 py-4 flex flex-row md:hidden items-center justify-between bg-neutral-100 dark:bg-neutral-800 w-full')} {...props}>
+			<div className="flex justify-end z-20 w-full">
+				<IconMenu2 className="text-neutral-800 dark:text-neutral-200" onClick={() => setOpen(!open)} />
 			</div>
-		</>
+			<AnimatePresence>
+				{open && (
+					<motion.div
+						initial={{ x: '-100%', opacity: 0 }}
+						animate={{ x: 0, opacity: 1 }}
+						exit={{ x: '-100%', opacity: 0 }}
+						transition={{
+							duration: 0.3,
+							ease: 'easeInOut',
+						}}
+						className={cn('fixed h-full w-full inset-0 bg-white dark:bg-neutral-900 p-10 z-[100] flex flex-col justify-between', className)}
+					>
+						<div className="absolute right-10 top-10 z-50 text-neutral-800 dark:text-neutral-200" onClick={() => setOpen(!open)}>
+							<IconX />
+						</div>
+						{children}
+					</motion.div>
+				)}
+			</AnimatePresence>
+		</div>
 	);
 };
 
@@ -120,24 +116,30 @@ export const SidebarLink = ({ link, className, ...props }: { link: Links; classN
 	const { open, animate } = useSidebar();
 	const { activeLink, setActiveLink } = useSnippetStore((state) => state);
 
+	const handleClick = () => {
+		if (link.label === 'Logout' && link.onClick) {
+			link.onClick(); // Trigger the custom logout handler
+		} else {
+			setActiveLink(link.label); // Handle normal link activation
+		}
+	};
+
 	return (
 		<Link
 			href={link.href}
-			className={cn('flex items-center justify-start gap-2  group/sidebar py-2 rounded-md pl-1', className, {
-				'bg-blue-500': activeLink === link.label,
-				' text-white': activeLink === link.label,
+			className={cn('flex items-center justify-start gap-2 group/sidebar py-1 px-1 rounded-md', className, {
+				'bg-blue-500 text-white': activeLink === link.label,
 			})}
 			{...props}
-			onClick={() => setActiveLink(link.label)}
+			onClick={handleClick}
 		>
 			{link.icon}
-
 			<motion.span
 				animate={{
 					display: animate ? (open ? 'inline-block' : 'none') : 'inline-block',
 					opacity: animate ? (open ? 1 : 0) : 1,
 				}}
-				className={cn('text-neutral-700  text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0', {
+				className={cn('text-neutral-700 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0', {
 					'text-white': activeLink === link.label,
 				})}
 			>

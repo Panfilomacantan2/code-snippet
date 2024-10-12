@@ -1,3 +1,5 @@
+"use client"
+
 import { CodeSnippetProps } from '@/types';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';

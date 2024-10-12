@@ -1,45 +1,47 @@
 'use client';
+
 import React, { useState } from 'react';
 import { Sidebar, SidebarBody, SidebarLink } from './ui/sidebar';
 import { IconLogout2, IconBrandTabler, IconTrash, IconHeart } from '@tabler/icons-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { useSnippetStore } from '@/store/snippets';
-import Tags from './Tags';
-import AddInput from './AddInput';
-import Snippets from './Snippets';
-import UserProfile from './UserProfile';
+import { useClerk } from '@clerk/nextjs';
 import SideBarLink from './SideBarLink';
 
+
 export function SideBar() {
+	const { signOut } = useClerk();
+
 	const links = [
 		{
 			label: 'All Snippets',
-			href: '#',
+			href: '/',
 			icon: <IconBrandTabler className="text-inherit h-5 w-5 flex-shrink-0" />,
 		},
 		{
 			label: 'Favorites',
-			href: '#',
+			href: '/favorites',
 			icon: <IconHeart className="text-inherit h-5 w-5 flex-shrink-0" />,
 		},
 		{
 			label: 'Trash',
-			href: '#',
+			href: '/trash',
 			icon: <IconTrash className="text-inherit h-5 w-5 flex-shrink-0" />,
 		},
 		{
 			label: 'Logout',
 			href: '#',
 			icon: <IconLogout2 className="text-inherit h-5 w-5 flex-shrink-0" />,
+			onClick: () => signOut(),
 		},
 	];
+
 	const [open, setOpen] = useState(false);
 	return (
 		<div
 			className={cn(
-				'rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 w-full flex-1 mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden',
+				'rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 min-w-[80px] border border-neutral-200 dark:border-neutral-700 overflow-hidden',
 				'h-[100vh]', // for your use case, use `h-screen` instead of `h-[60vh]`
 			)}
 		>
@@ -60,7 +62,7 @@ export function SideBar() {
 					</div>
 				</SidebarBody>
 			</Sidebar>
-			<Dashboard /> {/* Dashboard */}
+			
 		</div>
 	);
 }
@@ -82,33 +84,3 @@ export const LogoIcon = () => {
 	);
 };
 
-// Dummy dashboard component with content
-const Dashboard = () => {
-	const { data } = useSnippetStore((state) => state);
-	return (
-		<div className="flex flex-1">
-			<div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
-				{
-					/* Dummy content */
-					data.map((snippet, idx) => (
-						<div key={idx} className="flex flex-col gap-2 p-2 border border-border">
-							{snippet}
-						</div>
-					))
-				}
-
-				{/* user profile */}
-				<UserProfile />
-
-				{/* Add Input */}
-				<AddInput />
-
-				{/* Tags */}
-				<Tags />
-
-				{/* Snippets */}
-				<Snippets />
-			</div>
-		</div>
-	);
-};

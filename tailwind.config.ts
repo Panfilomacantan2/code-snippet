@@ -1,5 +1,6 @@
 import type { Config } from 'tailwindcss';
 import tailwindcssAnimate from 'tailwindcss-animate';
+import tailwindDebug from 'tailwindcss-debug-screens';
 import { nextui } from '@nextui-org/react';
 
 const config: Config = {
@@ -65,6 +66,6 @@ const config: Config = {
 	},
 
 	// @ts-expect-ignore
-	plugins: [nextui(), tailwindcssAnimate],
+	plugins: [nextui(), tailwindcssAnimate, tailwindDebug],
 };
 export default config;

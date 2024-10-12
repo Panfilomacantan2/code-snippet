@@ -4,6 +4,8 @@ import './globals.css';
 import { NextUIProvider } from '@nextui-org/react';
 import { ClerkProvider } from '@clerk/nextjs';
 import { ThemeProvider } from '@/components/theme-provider';
+import { cn } from '@/lib/utils';
+import { SideBar } from '@/components/Sidebar';
 
 const geistSans = localFont({
 	src: './fonts/GeistVF.woff',
@@ -29,9 +31,22 @@ export default function RootLayout({
 	return (
 		<ClerkProvider>
 			<html lang="en" suppressHydrationWarning>
-				<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+				<body
+					className={cn(
+						`h-screen w-full flex ${geistSans.variable} ${geistMono.variable} antialiased`,
+
+						{
+							'debug-screens': process.env.NODE_ENV === 'development',
+						},
+					)}
+				>
 					<ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-						<NextUIProvider>{children}</NextUIProvider>
+						<NextUIProvider>
+							<SideBar />
+
+							{/* main page */}
+							<div className="p-8 w-full">{children}</div>
+						</NextUIProvider>
 					</ThemeProvider>
 				</body>
 			</html>
